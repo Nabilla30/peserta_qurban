@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>📝 Daftar Peserta Qurban</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #f0fdf4;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    header {
+      text-align: center;
+      background-color: #4caf50;
+      color: white;
+      padding: 25px;
+      border-bottom: 5px solid #388e3c;
+    }
+
+    nav {
+      text-align: center;
+      background: #c8e6c9;
+      padding: 10px;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    form {
+      background: #ffffff;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .qurban-option {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f1f8e9;
+    }
+
+    .qurban-option img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    button {
+      background-color: #43a047;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2e7d32;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #2e7d32;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📝 Formulir Pendaftaran Qurban</h1>
+    <p>Isi form untuk ikut qurban bersama UNP 😊</p>
+  </header>
+
+  <nav>
+    <a href="index.html">🏠 Beranda</a>
+  </nav>
+
+  <form id="formDaftar">
+    <label>Nama Lengkap:</label>
+    <input type="text" required>
+
+    <label>NIP:</label>
+    <input type="text" required>
+
+    <label>Status:</label>
+    <select required>
+      <option value="">--Pilih--</option>
+      <option>Dosen</option>
+      <option>Karyawan</option>
+    </select>
+
+    <label>Jenis Qurban:</label>
+    <select required>
+      <option value="">--Pilih--</option>
+      <option>Pribadi</option>
+      <option>Patungan (1/7 Sapi)</option>
+    </select>
+
+    <label>Metode Pembayaran:</label>
+    <select required>
+      <option value="">--Pilih--</option>
+      <option>Potong Gaji</option>
+      <option>Transfer Manual</option>
+    </select>
+
+    <label>Pilihan Hewan Qurban:</label>
+
+    <div class="qurban-option">
+      <input type="radio" name="hewan" value="Sapi - 27.000.000" required>
+      <img src="sapi.jfif" alt="Sapi">
+      <span><strong>Sapi</strong><br>Harga: Rp 27.000.000</span>
+    </div>
+
+    <div class="qurban-option">
+      <input type="radio" name="hewan" value="Kambing - 3.000.000">
+      <img src="kambing.jfif" alt="Kambing">
+      <span><strong>Kambing</strong><br>Harga: Rp 3.000.000</span>
+    </div>
+
+    <div class="qurban-option">
+      <input type="radio" name="hewan" value="Domba - 2.800.000">
+      <img src="domba.jfif" alt="Domba">
+      <span><strong>Domba</strong><br>Harga: Rp 2.800.000</span>
+    </div>
+
+    <button type="submit">🕌 Daftar Sekarang</button>
+  </form>
+
+  <footer>&copy; 2025 - UNP Peduli</footer>
+
+  <script>
+    document.getElementById('formDaftar').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = this;
+      const selected = form.querySelector('input[name="hewan"]:checked');
+
+      const data = {
+        nama: form[0].value,
+        nip: form[1].value,
+        status: form[2].value,
+        jenisQurban: form[3].value,
+        metodeBayar: form[4].value,
+        hewan: selected ? selected.value : ''
+      };
+
+      let list = JSON.parse(localStorage.getItem('pesertaQurban')) || [];
+      list.push(data);
+      localStorage.setItem('pesertaQurban', JSON.stringify(list));
+      alert("✅ Data peserta berhasil disimpan!");
+      form.reset();
+    });
+  </script>
+</body>
+</html>

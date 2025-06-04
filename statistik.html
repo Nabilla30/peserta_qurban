@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>📊 Statistik Qurban & Potongan Gaji</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f6fd;
+      margin: 0;
+      padding: 20px;
+      color: #1a237e;
+    }
+
+    header {
+      background-color: #3949ab;
+      color: white;
+      padding: 25px;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 5px 10px rgba(57,73,171,0.5);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+
+    nav {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    nav a {
+      color: #283593;
+      font-weight: 600;
+      margin: 0 15px;
+      text-decoration: none;
+      font-size: 1.1em;
+      padding: 8px 15px;
+      border-radius: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #c5cae9;
+      color: #1a237e;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(33,33,33,0.1);
+    }
+
+    .summary {
+      text-align: center;
+      font-size: 1.3em;
+      margin-bottom: 40px;
+      color: #283593;
+      font-weight: 700;
+    }
+
+    canvas {
+      margin-bottom: 40px;
+    }
+
+    footer {
+      text-align: center;
+      color: #3949ab;
+      font-weight: 600;
+      margin-top: 30px;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📊 Statistik Qurban & Potongan Gaji UNP Peduli</h1>
+  </header>
+
+  <nav>
+    <a href="index.html">🏠 Beranda</a>
+    <a href="laporan.html">📄 Laporan</a>
+    <a href="potongan.html">💰 Input Potongan</a>
+  </nav>
+
+  <div class="container">
+    <div class="summary" id="summaryStats">
+      <!-- Ringkasan statistik muncul di sini -->
+    </div>
+
+    <canvas id="chartStatus" width="800" height="400"></canvas>
+    <canvas id="chartJenisPotongan" width="800" height="400"></canvas>
+  </div>
+
+  <footer>&copy; 2025 UNP Peduli</footer>
+
+  <script>
+    const pesertaList = JSON.parse(localStorage.getItem('pesertaQurban')) || [];
+    const potonganList = JSON.parse(localStorage.getItem('dataPotongan')) || [];
+
+    // Total peserta
+    const totalPeserta = pesertaList.length;
+
+    // Total potongan
+    const totalPotongan = potonganList.reduce((acc, p) => acc + p.jumlah, 0);
+
+    // Rata-rata potongan per peserta (hindari div 0)
+    const rataPotongan = totalPeserta > 0 ? (totalPotongan / totalPeserta) : 0;
+
+    // Statistik peserta per status (aktif, alumni, dll)
+    const statusCounts = {};
+    pesertaList.forEach(p => {
+      const st = p.status || 'Tidak Diketahui';
+      statusCounts[st] = (statusCounts[st] || 0) + 1;
+    });
+
+    // Statistik jenis potongan (nominal vs persentase)
+    const jenisPotonganCounts = { nominal: 0, persentase: 0 };
+    potonganList.forEach(p => {
+      if(p.jenis === 'nominal') jenisPotonganCounts.nominal++;
+      else if(p.jenis === 'persentase') jenisPotonganCounts.persentase++;
+    });
+
+    // Update ringkasan statistik
+    const summaryStats = document.getElementById('summaryStats');
+    summaryStats.innerHTML = `
+      Total Peserta Qurban: <strong>${totalPeserta}</strong><br>
+      Total Potongan Gaji: <strong>Rp ${totalPotongan.toLocaleString('id-ID')}</strong><br>
+      Rata-rata Potongan per Peserta: <strong>Rp ${rataPotongan.toFixed(0).toLocaleString('id-ID')}</strong>
+    `;
+
+    // Chart status peserta - Bar Chart
+    const ctxStatus = document.getElementById('chartStatus').getContext('2d');
+    const chartStatus = new Chart(ctxStatus, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(statusCounts),
+        datasets: [{
+          label: 'Jumlah Peserta',
+          data: Object.values(statusCounts),
+          backgroundColor: '#3949ab',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        },
+        scales: {
+          y: { beginAtZero: true, stepSize: 1 }
+        }
+      }
+    });
+
+    // Chart jenis potongan - Pie Chart
+    const ctxJenis = document.getElementById('chartJenisPotongan').getContext('2d');
+    const chartJenis = new Chart(ctxJenis, {
+      type: 'pie',
+      data: {
+        labels: ['Nominal', 'Persentase'],
+        datasets: [{
+          data: [jenisPotonganCounts.nominal, jenisPotonganCounts.persentase],
+          backgroundColor: ['#42a5f5', '#1e88e5'],
+          hoverOffset: 20
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { enabled: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

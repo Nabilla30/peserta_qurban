@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Selamat Datang Peserta Qurban</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fdf4;
+      padding: 30px;
+      text-align: center;
+      color: #2e7d32;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+    a {
+      display: inline-block;
+      margin: 10px 20px;
+      padding: 15px 30px;
+      background-color: #4caf50;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+    a:hover {
+      background-color: #388e3c;
+    }
+    button.logout {
+      margin-top: 40px;
+      padding: 10px 25px;
+      background-color: #e53935;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button.logout:hover {
+      background-color: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Selamat Datang, Peserta Qurban!</h1>
+  <p>Silakan pilih menu di bawah ini:</p>
+
+  <a href="daftar.html">📝 Daftar Peserta</a>
+  <a href="potongan.html">💰 Input Potongan Gaji</a>
+
+  <br/>
+
+  <button class="logout" id="logoutBtn">Logout</button>
+
+  <script>
+    const role = localStorage.getItem('role');
+    if (role !== 'peserta') {
+      alert('Anda harus login sebagai peserta untuk mengakses halaman ini!');
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('role');
+      alert('Anda telah logout.');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

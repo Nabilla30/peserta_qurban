@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>💰 Input Potongan Gaji</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fffde7;
+    }
+
+    header, footer {
+      background: #ffca28;
+      color: #3e2723;
+      text-align: center;
+      padding: 20px;
+    }
+
+    nav {
+      text-align: center;
+      background: #ffe082;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #bf360c;
+    }
+
+    form {
+      background: white;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #f9a825;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff6f00;
+    }
+
+    .quick {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .quick button {
+      flex: 1;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <header><h1>💸 Input Potongan Gaji</h1></header>
+
+  <nav>
+    <a href="index.html">🏠 Beranda</a>
+    <a href="form.html">📝 Daftar Qurban</a>
+    <a href="potongan.html">💰 Input Potongan</a>
+    <a href="laporan.html">📄 Laporan</a>
+    <a href="jadwal.html">📅 Jadwal Qurban</a> <!-- ini link langsung ke halaman jadwal -->
+    <a href="statistik.html">📊 Statistik</a>
+  </nav>
+
+  <form id="formPotongan">
+    <label>NIP:</label>
+    <input type="text" required>
+
+    <label>Nama Peserta:</label>
+    <input type="text" required>
+
+    <label>Gaji Bulanan (Rp):</label>
+    <input type="text" id="gaji" required>
+    <div class="quick">
+      <button type="button" onclick="setGaji(3000000)">3 Juta</button>
+      <button type="button" onclick="setGaji(5000000)">5 Juta</button>
+      <button type="button" onclick="setGaji(7000000)">7 Juta</button>
+    </div>
+
+    <label>Jenis Potongan:</label>
+    <select id="jenisPotongan" required>
+      <option value="nominal">Jumlah Tetap</option>
+      <option value="persentase">Persentase Gaji</option>
+    </select>
+
+    <label>Nilai Potongan:</label>
+    <input type="text" id="inputPotongan" required>
+    <div class="quick">
+      <button type="button" onclick="setPotongan(250000)">250rb</button>
+      <button type="button" onclick="setPotongan(500000)">500rb</button>
+      <button type="button" onclick="setPotongan(1000000)">1jt</button>
+    </div>
+
+    <label>Bulan Ke:</label>
+    <input type="number" min="1" max="12" required>
+
+    <button type="submit">💾 Simpan Potongan</button>
+  </form>
+
+  <footer>&copy; 2025 UNP Peduli</footer>
+
+  <script>
+    function setGaji(val) {
+      document.getElementById('gaji').value = val.toLocaleString('id-ID');
+    }
+
+    function setPotongan(val) {
+      document.getElementById('inputPotongan').value = val.toLocaleString('id-ID');
+    }
+
+    const form = document.getElementById('formPotongan');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const gaji = parseInt(form[2].value.replace(/\\./g, ''));
+      const jenis = form[3].value;
+      const nilai = form[4].value.replace(/\\./g, '');
+      const jumlah = jenis === 'persentase' ? Math.round((parseFloat(nilai)/100) * gaji) : parseInt(nilai);
+
+      const data = {
+        nip: form[0].value,
+        nama: form[1].value,
+        gaji,
+        jenis,
+        jumlah,
+        bulan: parseInt(form[5].value)
+      };
+
+      let potongan = JSON.parse(localStorage.getItem('dataPotongan') || '[]');
+      potongan.push(data);
+      localStorage.setItem('dataPotongan', JSON.stringify(potongan));
+      alert('✅ Potongan sebesar Rp ' + jumlah.toLocaleString('id-ID') + ' disimpan!');
+      form.reset();
+    });
+  </script>
+</body>
+</html>
